@@ -30,53 +30,60 @@ def process_legislator_dataset(legislators, votes, vote_results):
         how many bills did the legislator support (voted for the bill)?
         How many bills did the legislator oppose?
     """
+    votes_by_id = {vote['id']: vote for vote in votes}
+
     acc = {}
     for legislator in legislators:
         legislator_id = legislator['id']
         legislator_name = legislator['name']
 
-        if legislator_id not in acc:
-            acc[legislator_id] = {
-                    'name': legislator_name, 'supported_bills': [], 'opposed_bills': []}
+        acc[legislator_id] = {
+            'name': legislator_name,
+            'supported_bills': [],
+            'opposed_bills': []
+        }
 
-        for vote_result in vote_results:
-            if vote_result['legislator_id'] == legislator_id:
-                vote = next((v for v in votes  if v['id'] == vote_result['vote_id']), None)
+    for vote_result in vote_results:
+        legislator_id = vote_result['legislator_id']
+        if legislator_id in acc:
+            vote = votes_by_id.get(vote_result['vote_id'])
+            if vote:
                 if vote_result['vote_type'] == VOTE_TYPE_YES:
                     acc[legislator_id]['supported_bills'].append(vote['bill_id'])
-                if vote_result['vote_type'] == VOTE_TYPE_NO:
+                elif vote_result['vote_type'] == VOTE_TYPE_NO:
                     acc[legislator_id]['opposed_bills'].append(vote['bill_id'])
 
     return acc
 
 def process_bill_dataset(bills, votes, vote_results):
-    """"
+    """
     2. For every bill in the dataset,
         how many legislators supported the bill?
         How many legislators opposed the bill?
         Who was the primary sponsor of the bill?
     """
+    votes_by_id = {vote['id']: vote for vote in votes}
+
     acc = {}
     for bill in bills:
         bill_id = bill['id']
-        bill_title = bill['title']
         primary_sponsor = bill['sponsor_id']
 
-        if bill_id not in acc:
-            acc[bill_id] = {
-                'primary_sponsor': primary_sponsor,
-                'supported_legislators': [],
-                'opposed_legislators': []
-            }
+        acc[bill_id] = {
+            'primary_sponsor': primary_sponsor,
+            'supported_legislators': [],
+            'opposed_legislators': []
+        }
 
-        for vote_result in vote_results:
-            for vote in votes:
-                if vote_result['vote_id'] == vote['id']:
-                    if vote['bill_id'] == bill_id:
-                        if vote_result['vote_type'] == VOTE_TYPE_YES:
-                            acc[bill_id]['supported_legislators'].append(vote_result['legislator_id'])
-                        if vote_result['vote_type'] == VOTE_TYPE_NO:
-                            acc[bill_id]['opposed_legislators'].append(vote_result['legislator_id'])
+    for vote_result in vote_results:
+        vote = votes_by_id.get(vote_result['vote_id'])
+        if vote:
+            bill_id = vote['bill_id']
+            if bill_id in acc:
+                if vote_result['vote_type'] == VOTE_TYPE_YES:
+                    acc[bill_id]['supported_legislators'].append(vote_result['legislator_id'])
+                elif vote_result['vote_type'] == VOTE_TYPE_NO:
+                    acc[bill_id]['opposed_legislators'].append(vote_result['legislator_id'])
 
     return acc
 
