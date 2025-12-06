@@ -5,6 +5,13 @@ def read_csv(filename):
     with open(filename, 'r', encoding='utf-8') as f:
         return list(csv.DictReader(f))
 
+def write_csv(filename, fieldnames, rows):
+    """Write data to a CSV file."""
+    with open(filename, 'w', encoding='utf-8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
 
 legislators = read_csv('legislators.csv')
 bills = read_csv('bills.csv')
@@ -69,14 +76,23 @@ def process_bill_dataset(bills, votes, vote_results):
     return acc
 
 
-legislators = process_legislator_dataset(legislators, votes, vote_results)
-for k, v in legislators.items():
-    print(k, v['name'], len(set(v['supported_bills'])), len(set(v['opposed_bills'])))
-
-bills = process_bill_dataset(bills, votes, vote_results)
-for k, v in bills.items():
-    print(k, v['primary_sponsor'], len(set(v['supported_legislators'])),
-          len(set(v['opposed_legislators'])))
-
-
-
+write_csv(
+    filename='legislator_stats.csv',
+    fieldnames=['legislator_id', 'name', 'supported_bills', 'opposed_bills'],
+    rows=[{
+        'legislator_id': k,
+        'name': v['name'],
+        'supported_bills': len(set(v['supported_bills'])),
+        'opposed_bills': len(set(v['opposed_bills']))
+    } for k, v in process_legislator_dataset(legislators, votes, vote_results).items()]
+)
+write_csv(
+    filename='bills_stats.csv',
+    fieldnames=['bill_id', 'primary_sponsor', 'supported_legislators', 'opposed_legislators'],
+    rows=[{
+        'bill_id': k,
+        'primary_sponsor': v['primary_sponsor'],
+        'supported_legislators': len(set(v['supported_legislators'])),
+        'opposed_legislators': len(set(v['opposed_legislators']))
+    } for k, v in process_bill_dataset(bills, votes, vote_results).items()]
+)
