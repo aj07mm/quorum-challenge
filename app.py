@@ -2,6 +2,7 @@ import csv
 
 
 INPUT_FILES_PATH = './input_files/'
+OUTPUT_FILES_PATH = './input_files/'
 
 
 def read_csv(filename):
@@ -80,7 +81,7 @@ def process_bill_dataset(bills, votes, vote_results):
 
 
 write_csv(
-    filename='legislator_stats.csv',
+    filename=OUTPUT_FILES_PATH + 'legislator_stats.csv',
     fieldnames=['legislator_id', 'name', 'supported_bills', 'opposed_bills'],
     rows=[{
         'legislator_id': k,
@@ -90,7 +91,7 @@ write_csv(
     } for k, v in process_legislator_dataset(legislators, votes, vote_results).items()]
 )
 write_csv(
-    filename='bills_stats.csv',
+    filename=OUTPUT_FILES_PATH + 'bills_stats.csv',
     fieldnames=['bill_id', 'primary_sponsor', 'supported_legislators', 'opposed_legislators'],
     rows=[{
         'bill_id': k,
