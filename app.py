@@ -3,12 +3,13 @@ import csv
 VOTE_TYPE_YES = '1'
 VOTE_TYPE_NO = '2'
 INPUT_FILES_PATH = './input_files/'
-OUTPUT_FILES_PATH = './input_files/'
+OUTPUT_FILES_PATH = './output_files/'
 
 
 def read_csv(filename):
     with open(filename, 'r', encoding='utf-8') as f:
         return list(csv.DictReader(f))
+
 
 def write_csv(filename, fieldnames, rows):
     with open(filename, 'w', encoding='utf-8', newline='') as f:
