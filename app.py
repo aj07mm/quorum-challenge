@@ -1,6 +1,9 @@
 import csv
 
 
+INPUT_FILES_PATH = './input_files/'
+
+
 def read_csv(filename):
     with open(filename, 'r', encoding='utf-8') as f:
         return list(csv.DictReader(f))
@@ -13,10 +16,10 @@ def write_csv(filename, fieldnames, rows):
         writer.writerows(rows)
 
 
-legislators = read_csv('legislators.csv')
-bills = read_csv('bills.csv')
-votes = read_csv('votes.csv')
-vote_results = read_csv('vote_results.csv')
+legislators = read_csv(INPUT_FILES_PATH + 'legislators.csv')
+bills = read_csv(INPUT_FILES_PATH + 'bills.csv')
+votes = read_csv(INPUT_FILES_PATH + 'votes.csv')
+vote_results = read_csv(INPUT_FILES_PATH + 'vote_results.csv')
 
 
 def process_legislator_dataset(legislators, votes, vote_results):
