@@ -1,6 +1,7 @@
 import csv
 
-
+VOTE_TYPE_YES = '1'
+VOTE_TYPE_NO = '2'
 INPUT_FILES_PATH = './input_files/'
 OUTPUT_FILES_PATH = './input_files/'
 
@@ -10,7 +11,6 @@ def read_csv(filename):
         return list(csv.DictReader(f))
 
 def write_csv(filename, fieldnames, rows):
-    """Write data to a CSV file."""
     with open(filename, 'w', encoding='utf-8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -41,9 +41,9 @@ def process_legislator_dataset(legislators, votes, vote_results):
         for vote_result in vote_results:
             if vote_result['legislator_id'] == legislator_id:
                 vote = next((v for v in votes  if v['id'] == vote_result['vote_id']), None)
-                if vote_result['vote_type'] == '1': # yes
+                if vote_result['vote_type'] == VOTE_TYPE_YES:
                     acc[legislator_id]['supported_bills'].append(vote['bill_id'])
-                if vote_result['vote_type'] == '2': # no
+                if vote_result['vote_type'] == VOTE_TYPE_NO:
                     acc[legislator_id]['opposed_bills'].append(vote['bill_id'])
 
     return acc
@@ -72,9 +72,9 @@ def process_bill_dataset(bills, votes, vote_results):
             for vote in votes:
                 if vote_result['vote_id'] == vote['id']:
                     if vote['bill_id'] == bill_id:
-                        if vote_result['vote_type'] == '1': # yes
+                        if vote_result['vote_type'] == VOTE_TYPE_YES:
                             acc[bill_id]['supported_legislators'].append(vote_result['legislator_id'])
-                        if vote_result['vote_type'] == '2': # no
+                        if vote_result['vote_type'] == VOTE_TYPE_NO:
                             acc[bill_id]['opposed_legislators'].append(vote_result['legislator_id'])
 
     return acc
