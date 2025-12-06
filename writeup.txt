@@ -1,6 +1,22 @@
-1. Discuss your solution’s time complexity. What tradeoffs did you make?
+1. Discuss your solution's time complexity. What tradeoffs did you make?
+
+Time complexity is O(n) where n is the total size of all input data.
+Tradeoff is using more memory to make it faster.
+
 2. How would you change your solution to account for future columns that might be requested, such as
-“Bill Voted On Date ” or “Co-Sponsors ”?
+"Bill Voted On Date " or "Co-Sponsors "?
+
+Update the processing functions to collect the new data fields.
+Add the new column names to the fieldnames list.
+Include the new fields in the output dictionaries.
+
 3. How would you change your solution if instead of receiving CSVs of data, you were given a
 list of legislators or bills that you should generate a CSV for?
+
+Change the read_csv calls to fetch from an API or database.
+Filter the results to only process the IDs in the given list.
+The rest of the processing stays mostly the same.
+
 4. How long did you spend working on the assignment?
+
+1 and a half hours
